@@ -1,11 +1,7 @@
 const { TableClient } = require("@azure/data-tables");
 
 module.exports = async function (context, req) {
-  // handle preflight cleanly
-  if (req.method === 'OPTIONS') {
-    context.res = { status: 204 };
-    return;
-  }
+  if (req.method === 'OPTIONS') { context.res = { status: 204 }; return; }
 
   try {
     const { name = "", email = "", rating, comments = "" } = req.body || {};
@@ -29,6 +25,6 @@ module.exports = async function (context, req) {
     context.res = { status: 200, jsonBody: { message: "Thank you for your feedback!" } };
   } catch (err) {
     context.log("Error:", err);
-    context.res = { status: 500, jsonBody: { message: "Server error", detail: String(err) } };
+    context.res = { status: 500, jsonBody: { message: "Server error" } };
   }
 };

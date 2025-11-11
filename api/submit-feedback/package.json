@@ -2,6 +2,5 @@
   "name": "submit-feedback",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
   "dependencies": { "@azure/data-tables": "^13.2.2" }
 }
