@@ -1,0 +1,23 @@
+<form id="fb" onsubmit="return sendFb(event)">
+  <input name="name" placeholder="Name (optional)">
+  <input name="email" type="email" required placeholder="Email">
+  <select name="rating" required>
+    <option value="">Rating</option>
+    <option>1</option><option>2</option><option>3</option>
+    <option>4</option><option>5</option>
+  </select>
+  <textarea name="comments" required placeholder="Comments"></textarea>
+  <button type="submit">Submit</button>
+</form>
+<script>
+async function sendFb(e){
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  const res = await fetch('/api/submit-feedback', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
+  alert((await res.json()).message || 'Submitted!');
+}
+</script>
