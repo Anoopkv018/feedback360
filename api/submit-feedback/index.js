@@ -17,7 +17,7 @@ module.exports = async function (context, req) {
     }
 
     const conn = process.env.STORAGE_CONNECTION_STRING;
-    const tableName = process.env.TABLE_NAME || "feedback";
+    const tableName = process.env.TABLE_NAME || "Feedback";
     const client = TableClient.fromConnectionString(conn, tableName);
 
     const entity = {
