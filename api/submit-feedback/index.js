@@ -1,39 +1,34 @@
 const { TableClient } = require("@azure/data-tables");
 
 module.exports = async function (context, req) {
-  // CORS preflight
-  if (req.method === "OPTIONS") { context.res = { status: 204 }; return; }
-
-  if (req.method === "GET") {
-    context.res = { status: 200, jsonBody: { ok: true } };
-    return;
-  }
-
   try {
-    const { name = "", email = "", rating, comments = "" } = req.body || {};
-    if (!email || !comments || !rating) {
-      context.res = { status: 400, jsonBody: { message: "Missing required fields." } };
-      return;
-    }
+    if (req.method === "OPTIONS") { context.res = { status: 204 }; return; }
+    if (req.method === "GET") { context.res = { status: 200, jsonBody: { ok: true } }; return; }
 
+    const { name = "", email = "", rating, comments = "" } = req.body || {};
+
+    // --- env sanity ---
     const conn = process.env.STORAGE_CONNECTION_STRING;
     const tableName = process.env.TABLE_NAME || "Feedback";
-    const client = TableClient.fromConnectionString(conn, tableName);
+    if (!conn) throw new Error("Missing env: STORAGE_CONNECTION_STRING");
+    if (!tableName) throw new Error("Missing env: TABLE_NAME");
 
-    const entity = {
+    // --- client + ensure table exists ---
+    const client = TableClient.fromConnectionString(conn, tableName);
+    try { await client.createTable(); } catch (_) { /* already exists */ }
+
+    // --- write entity ---
+    await client.createEntity({
       partitionKey: "fb",
       rowKey: `${Date.now()}_${Math.random().toString(36).slice(2)}`,
-      name,
-      email,
-      rating: Number(rating),
-      comments,
+      name, email, rating: Number(rating), comments,
       submittedAt: new Date().toISOString()
-    };
+    });
 
-    await client.createEntity(entity);
     context.res = { status: 200, jsonBody: { message: "Thank you for your feedback!" } };
   } catch (err) {
     context.log("submit-feedback error:", err);
-    context.res = { status: 500, jsonBody: { message: "Server error", detail: String(err) } };
+    // send detailed error back so we can see it in the alert
+    context.res = { status: 500, jsonBody: { message: "Storage error", detail: String(err && err.message || err) } };
   }
 };
