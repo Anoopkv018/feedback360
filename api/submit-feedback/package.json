@@ -1,6 +1,6 @@
 {
-  "name":"submit-feedback",
-  "version":"1.0.0",
-  "main":"index.js",
-  "dependencies": {}
+  "name": "submit-feedback",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": { "@azure/data-tables": "^13.2.2" }
 }

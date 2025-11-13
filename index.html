@@ -14,13 +14,13 @@ async function sendFb(e){
   e.preventDefault();
   const data = Object.fromEntries(new FormData(e.target));
   const res = await fetch('/api/submit-feedback', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
+    method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify(data)
   });
-  const text = await res.text();
-  let msg = text; try { msg = JSON.parse(text).message || text; } catch {}
+  const t = await res.text(); let msg = t; try { msg = JSON.parse(t).message || t; } catch {}
   alert(`Status ${res.status}: ${msg}`);
+  if (res.ok) e.target.reset();
 }
 </script>
+
 
