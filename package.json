@@ -1,0 +1,7 @@
+{
+  "name": "static-app",
+  "private": true,
+  "scripts": {
+    "build": "echo \"no build needed\""
+  }
+}
