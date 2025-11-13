@@ -5,8 +5,8 @@
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
-      "methods": ["get","post","options"],   
-      "route": "submit-feedback"
+      "methods": ["get","post","options"],   // <-- allow POST + preflight
+      "route": "submit-feedback"             // <-- NOT "api/submit-feedback"
     },
     { "type": "http", "direction": "out", "name": "res" }
   ]

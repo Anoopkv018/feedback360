@@ -18,6 +18,9 @@ async function sendFb(e){
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify(data)
   });
-  alert((await res.json()).message || 'Submitted!');
+  const text = await res.text();
+  let msg = text; try { msg = JSON.parse(text).message || text; } catch {}
+  alert(`Status ${res.status}: ${msg}`);
 }
 </script>
+

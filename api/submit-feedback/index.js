@@ -1,16 +1,20 @@
 module.exports = async function (context, req) {
   if (req.method === 'OPTIONS') { context.res = { status: 204 }; return; }
 
-  if (req.method === 'GET') {               // quick wiring check
-    context.res = { status: 200, body: "submit-feedback is up" };
+  if (req.method === 'GET') {  // quick GET test in browser
+    context.res = { status: 200, jsonBody: { ok: true, route: "submit-feedback" } };
     return;
   }
 
-  // minimal POST handler (no storage yet)
   try {
-    const body = req.body || {};
-    context.res = { status: 200, jsonBody: { ok: true, echo: body } };
+    const { name = "", email = "", rating, comments = "" } = req.body || {};
+    if (!email || !comments || !rating) {
+      context.res = { status: 400, jsonBody: { message: "Missing required fields." } };
+      return;
+    }
+    // TODO: add Table Storage write here once POST works
+    context.res = { status: 200, jsonBody: { message: "Thank you for your feedback!" } };
   } catch (e) {
-    context.res = { status: 500, jsonBody: { ok: false, error: String(e) } };
+    context.res = { status: 500, jsonBody: { message: "Server error", detail: String(e) } };
   }
 };
